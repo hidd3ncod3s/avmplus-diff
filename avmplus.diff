@@ -1,82 +1,93 @@
-diff –git a/core/Isolate.cpp b/core/Isolate.cpp
-index fe88b87..1ae6e10 100644
-— a/core/Isolate.cpp
+diff --git a/core/Isolate.cpp b/core/Isolate.cpp
+index fe88b87..8f584a6 100644
+--- a/core/Isolate.cpp
 +++ b/core/Isolate.cpp
-@@ -6,7 +6,8 @@
-#include “avmplus.h”
--#include “FixedHeapUtils.cpp”
-+//#include “FixedHeapUtils.cpp”
-+#include “FixedHeapUtils.h”
-#include “Channels.cpp”
-#include “VMThread.h”
-diff –git a/platform/win32/avm2010.vcxproj b/platform/win32/avm2010.vcxproj
-index 178927d..de10e4a 100644
-— a/platform/win32/avm2010.vcxproj
+@@ -6,7 +6,7 @@
+ 
+ #include "avmplus.h"
+ 
+-#include "FixedHeapUtils.cpp"
++#include "FixedHeapUtils.h"
+ #include "Channels.cpp"
+ #include "VMThread.h"
+ 
+diff --git a/platform/win32/avm2010.vcxproj b/platform/win32/avm2010.vcxproj
+index 178927d..265808d 100644
+--- a/platform/win32/avm2010.vcxproj
 +++ b/platform/win32/avm2010.vcxproj
 @@ -47,11 +47,14 @@
-     <ClCompile Include=”..\..\core\ArrayObject.cpp” />
-     <ClCompile Include=”..\..\core\atom.cpp” />
-     <ClCompile Include=”..\..\core\AvmSerializer.cpp” />
-+    <ClCompile Include=”..\..\core\ConcurrencyGlue.cpp” />
-     <ClCompile Include=”..\..\core\d2a.cpp” />
-     <ClCompile Include=”..\..\core\DictionaryGlue.cpp” />
-+    <ClCompile Include=”..\..\core\FixedHeapUtils.cpp” />
-     <ClCompile Include=”..\..\core\Float4Class.cpp” />
-     <ClCompile Include=”..\..\core\FloatClass.cpp” />
-     <ClCompile Include=”..\..\core\InvokerCompiler.cpp” />
-+    <ClCompile Include=”..\..\core\Isolate.cpp” />
-     <ClCompile Include=”..\..\core\JSONClass.cpp” />
-     <ClCompile Include=”..\..\core\ObjectIO.cpp” />
-     <ClCompile Include=”..\..\core\ProxyGlue.cpp” />
+     <ClCompile Include="..\..\core\ArrayObject.cpp" />
+     <ClCompile Include="..\..\core\atom.cpp" />
+     <ClCompile Include="..\..\core\AvmSerializer.cpp" />
++    <ClCompile Include="..\..\core\ConcurrencyGlue.cpp" />
+     <ClCompile Include="..\..\core\d2a.cpp" />
+     <ClCompile Include="..\..\core\DictionaryGlue.cpp" />
++    <ClCompile Include="..\..\core\FixedHeapUtils.cpp" />
+     <ClCompile Include="..\..\core\Float4Class.cpp" />
+     <ClCompile Include="..\..\core\FloatClass.cpp" />
+     <ClCompile Include="..\..\core\InvokerCompiler.cpp" />
++    <ClCompile Include="..\..\core\Isolate.cpp" />
+     <ClCompile Include="..\..\core\JSONClass.cpp" />
+     <ClCompile Include="..\..\core\ObjectIO.cpp" />
+     <ClCompile Include="..\..\core\ProxyGlue.cpp" />
 @@ -242,6 +245,11 @@
-     <ClCompile Include=”..\..\nanojit\NativeX64.cpp” />
-     <ClCompile Include=”..\..\nanojit\njconfig.cpp” />
-     <ClCompile Include=”..\..\nanojit\RegAlloc.cpp” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\Alloc.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzFind.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzmaDec.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzmaEnc.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzmaLib.c” />
-     <ClCompile Include=”..\..\other-licenses\zlib\adler32.c” />
-     <ClCompile Include=”..\..\other-licenses\zlib\compress.c” />
-     <ClCompile Include=”..\..\other-licenses\zlib\crc32.c” />
+     <ClCompile Include="..\..\nanojit\NativeX64.cpp" />
+     <ClCompile Include="..\..\nanojit\njconfig.cpp" />
+     <ClCompile Include="..\..\nanojit\RegAlloc.cpp" />
++    <ClCompile Include="..\..\other-licenses\lzma\Alloc.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzFind.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzmaDec.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzmaEnc.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzmaLib.c" />
+     <ClCompile Include="..\..\other-licenses\zlib\adler32.c" />
+     <ClCompile Include="..\..\other-licenses\zlib\compress.c" />
+     <ClCompile Include="..\..\other-licenses\zlib\crc32.c" />
 @@ -318,6 +326,8 @@
-     <ClCompile Include=”..\..\shell\FileClass.cpp” />
-     <ClCompile Include=”..\..\shell\FileInputStream.cpp” />
-     <ClCompile Include=”..\..\shell\ShellCore.cpp” />
-+    <ClCompile Include=”..\..\shell\ShellWorkerDomainGlue.cpp” />
-+    <ClCompile Include=”..\..\shell\ShellWorkerGlue.cpp” />
-     <ClCompile Include=”..\..\shell\swf.cpp” />
-     <ClCompile Include=”..\..\shell\SystemClass.cpp” />
-     <ClCompile Include=”..\..\shell\WinFile.cpp” />
-diff –git a/platform/win32/avm2010.vcxproj.filters b/platform/win32/avm2010.vcxproj.filters
+     <ClCompile Include="..\..\shell\FileClass.cpp" />
+     <ClCompile Include="..\..\shell\FileInputStream.cpp" />
+     <ClCompile Include="..\..\shell\ShellCore.cpp" />
++    <ClCompile Include="..\..\shell\ShellWorkerDomainGlue.cpp" />
++    <ClCompile Include="..\..\shell\ShellWorkerGlue.cpp" />
+     <ClCompile Include="..\..\shell\swf.cpp" />
+     <ClCompile Include="..\..\shell\SystemClass.cpp" />
+     <ClCompile Include="..\..\shell\WinFile.cpp" />
+@@ -815,7 +825,7 @@
+       <AdditionalIncludeDirectories>..\..\generated;..\..\VMPI;..\..\AVMPI;..\..\vmbase;..\..\shell;..\..\extensions;..\..\MMgc;..\..\other-licenses\zlib;..\..\core;..\..\eval;..\..\pcre;..\..\nanojit;.;..</AdditionalIncludeDirectories>
+       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+       <CompileAsManaged>false</CompileAsManaged>
+-      <TreatWarningAsError>true</TreatWarningAsError>
++      <TreatWarningAsError>false</TreatWarningAsError>
+       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;WIN32_LEAN_AND_MEAN;AVMSHELL_BUILD;WIN32;_CONSOLE;USE_REAL2INT;_UNICODE;UNICODE;AVMFEATURE_SELFTEST=1;AVMFEATURE_EVAL=1;AVMFEATURE_SWF12=1;AVMFEATURE_SWF13=1;AVMFEATURE_SWF14=1;AVMFEATURE_SWF15=1;AVMFEATURE_SWF16=1;AVMFEATURE_JIT=1;AVMTWEAK_EXACT_TRACING=1;AVMTWEAK_SELECTABLE_EXACT_TRACING=0;%(PreprocessorDefinitions);_DEBUG</PreprocessorDefinitions>
+       <StringPooling>true</StringPooling>
+diff --git a/platform/win32/avm2010.vcxproj.filters b/platform/win32/avm2010.vcxproj.filters
 index 54034dd..515d148 100644
-— a/platform/win32/avm2010.vcxproj.filters
+--- a/platform/win32/avm2010.vcxproj.filters
 +++ b/platform/win32/avm2010.vcxproj.filters
 @@ -671,6 +671,26 @@
-     <ClCompile Include=”..\..\core\ObjectIO.cpp”>
+     <ClCompile Include="..\..\core\ObjectIO.cpp">
        <Filter>core</Filter>
      </ClCompile>
-+    <ClCompile Include=”..\..\core\FixedHeapUtils.cpp”>
++    <ClCompile Include="..\..\core\FixedHeapUtils.cpp">
 +      <Filter>core</Filter>
 +    </ClCompile>
-+    <ClCompile Include=”..\..\core\ConcurrencyGlue.cpp”>
++    <ClCompile Include="..\..\core\ConcurrencyGlue.cpp">
 +      <Filter>core</Filter>
 +    </ClCompile>
-+    <ClCompile Include=”..\..\core\Isolate.cpp”>
++    <ClCompile Include="..\..\core\Isolate.cpp">
 +      <Filter>core</Filter>
 +    </ClCompile>
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzmaLib.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\Alloc.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzmaEnc.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzFind.c” />
-+    <ClCompile Include=”..\..\other-licenses\lzma\LzmaDec.c” />
-+    <ClCompile Include=”..\..\shell\ShellWorkerGlue.cpp”>
++    <ClCompile Include="..\..\other-licenses\lzma\LzmaLib.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\Alloc.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzmaEnc.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzFind.c" />
++    <ClCompile Include="..\..\other-licenses\lzma\LzmaDec.c" />
++    <ClCompile Include="..\..\shell\ShellWorkerGlue.cpp">
 +      <Filter>shell</Filter>
 +    </ClCompile>
-+    <ClCompile Include=”..\..\shell\ShellWorkerDomainGlue.cpp”>
++    <ClCompile Include="..\..\shell\ShellWorkerDomainGlue.cpp">
 +      <Filter>shell</Filter>
 +    </ClCompile>
    </ItemGroup>
    <ItemGroup>
-     <ClInclude Include=”..\..\core\AbcEnv.h”>
+     <ClInclude Include="..\..\core\AbcEnv.h">
